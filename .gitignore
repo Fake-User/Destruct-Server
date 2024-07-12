@@ -1,0 +1,11 @@
+.env
+.wav
+.ogg
+.aac
+.db
+.sqlite
+.DS_Store
+
+/target
+/input
+/output
