@@ -1,24 +1,47 @@
-#![allow(unused)]
+mod creds;
+mod utc;
 
+use tower_http::cors::{CorsLayer, Any};
+use tokio::sync::broadcast;
+use std::sync::Arc;
+use dotenv::dotenv;
 use axum::{
-    Router,
     routing::get,
-    response::sse::{Event, KeepAlive, Sse},
+    Router,
 };
-use std::{time::Duration, convert::Infallible};
-use tokio_stream::StreamExt as _ ;
-use futures_util::stream::{self, Stream};
+
+#[derive(Clone)]
+pub struct AppState {
+    tx: broadcast::Sender<String>,
+}
 
 #[tokio::main]
 async fn main() {
-    let app: Router = Router::new().route("/sse", get(sse_handler));
+    dotenv().ok();
 
-    async fn sse_handler() -> Sse<impl Stream<Item = Result<Event, Infallible>>> {
-        // A `Stream` that repeats an event every second
-        let stream = stream::repeat_with(|| Event::default().data("hi!"))
-            .map(Ok)
-            .throttle(Duration::from_secs(1));
+    let path = std::path::Path::new("utc.txt");
+    if !path.exists() {
+        match std::fs::File::create(path) {
+            Ok(_) => println!("{:#?} created successfully", path),
+            Err(_) => println!("error creating {:#?}", path),
+        }
+    };
 
-        Sse::new(stream).keep_alive(KeepAlive::default())
-    }
+    let (tx, _rx) = broadcast::channel(100);
+    let state = Arc::new(AppState { tx });
+
+    let cors = CorsLayer::new()
+        .allow_methods(Any)
+        .allow_headers(Any)
+        .allow_origin(Any);
+
+    let app = Router::new()
+        .route("/creds", get(creds::get_creds))
+        .route("/get-utc", get(utc::get_utc))
+        .route("/set-utc", get(utc::set_utc))
+        .with_state(state)
+        .layer(cors);
+
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    axum::serve(listener, app).await.unwrap();
 }

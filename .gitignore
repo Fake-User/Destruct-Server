@@ -1,11 +1,4 @@
-.env
-.wav
-.ogg
-.aac
-.db
-.sqlite
 .DS_Store
-
 /target
-/input
-/output
+utc.txt
+.env
