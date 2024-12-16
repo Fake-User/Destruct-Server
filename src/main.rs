@@ -39,6 +39,7 @@ async fn main() {
         .route("/creds", get(creds::get_creds))
         .route("/get-utc", get(utc::get_utc))
         .route("/set-utc", get(utc::set_utc))
+        .route("/test", get("test"))
         .with_state(state)
         .layer(cors);
 
