@@ -22,11 +22,15 @@ async fn main(){
     #[cfg(debug_assertions)]
     dotenv().ok();
 
-    let path = std::path::Path::new("utc.txt");
-    if !path.exists() {
-        match std::fs::File::create(path) {
+    let path = std::path::Path::new("./store/utc.txt");
+    if !path.exists(){
+        match std::fs::create_dir_all("./store"){
             Ok(_) => println!("{:#?} created successfully", path),
-            Err(_) => println!("error creating {:#?}", path),
+            Err(_) => println!("error creating {:#?}", path)
+        }
+        match std::fs::File::create(path){
+            Ok(_) => println!("{:#?} created successfully", path),
+            Err(_) => println!("error creating {:#?}", path)
         }
     };
 

@@ -50,7 +50,7 @@ pub async fn set_utc(State(state): State<Arc<AppState>>, headers: HeaderMap) -> 
 
 pub async fn get_utc(State(state): State<Arc<AppState>>) -> Sse<impl Stream<Item = Result<Event, io::Error>>> {
     let mut rx = state.tx.subscribe();
-    let initial_value = fs::read_to_string("utc.txt").unwrap_or_default();
+    let initial_value = fs::read_to_string("./store/utc.txt").unwrap_or_default();
     println!("{:#?}", initial_value);
     let stream = async_stream::stream! {
         yield Ok(Event::default().data(initial_value));
