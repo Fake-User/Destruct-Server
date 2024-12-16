@@ -4,11 +4,13 @@ mod utc;
 use tower_http::cors::{CorsLayer, Any};
 use tokio::sync::broadcast;
 use std::sync::Arc;
-use dotenv::dotenv;
 use axum::{
     routing::get,
     Router,
 };
+
+#[cfg(debug_assertions)]
+use dotenv::dotenv;
 
 #[derive(Clone)]
 pub struct AppState {
@@ -16,7 +18,8 @@ pub struct AppState {
 }
 
 #[tokio::main]
-async fn main() {
+async fn main(){
+    #[cfg(debug_assertions)]
     dotenv().ok();
 
     let path = std::path::Path::new("utc.txt");
