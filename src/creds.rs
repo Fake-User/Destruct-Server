@@ -28,7 +28,7 @@ struct CloudflareResult {
     session_token: String
 }
 
-pub async fn get_creds() -> Result<Json<Credentials>, StatusCode> {
+pub async fn creds() -> Result<Json<Credentials>, StatusCode> {
     let client = Client::new();
 
     let body = serde_json::json!({

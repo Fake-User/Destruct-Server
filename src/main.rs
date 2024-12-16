@@ -1,3 +1,4 @@
+mod debug;
 mod creds;
 mod utc;
 
@@ -43,10 +44,10 @@ async fn main(){
         .allow_origin(Any);
 
     let app = Router::new()
-        .route("/creds", get(creds::get_creds))
         .route("/get-utc", get(utc::get_utc))
         .route("/set-utc", get(utc::set_utc))
-        .route("/test", get("test"))
+        .route("/creds", get(creds::creds))
+        .route("/debug", get(debug::debug))
         .with_state(state)
         .layer(cors);
 
