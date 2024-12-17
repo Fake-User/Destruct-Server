@@ -1,4 +1,3 @@
-mod debug;
 mod creds;
 mod utc;
 
@@ -47,7 +46,6 @@ async fn main(){
         .route("/get-utc", get(utc::get_utc))
         .route("/set-utc", get(utc::set_utc))
         .route("/creds", get(creds::creds))
-        .route("/debug", get(debug::debug))
         .with_state(state)
         .layer(cors);
 

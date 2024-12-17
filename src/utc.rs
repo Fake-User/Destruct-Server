@@ -1,6 +1,6 @@
 use futures::stream::Stream;
 use std::sync::Arc;
-use std::{fs, io, env};
+use std::{fs, env};
 use axum::{
     response::{Sse, IntoResponse},
     response::sse::Event,
@@ -48,12 +48,10 @@ pub async fn set_utc(State(state): State<Arc<AppState>>, headers: HeaderMap) -> 
     "UTC updated successfully".into_response()
 }
 
-pub async fn get_utc(State(state): State<Arc<AppState>>) -> Sse<impl Stream<Item = Result<Event, io::Error>>> {
+pub async fn get_utc(State(state): State<Arc<AppState>>) -> Sse<impl Stream<Item = Result<Event, std::io::Error>>> {
     let mut rx = state.tx.subscribe();
-    let initial_value = fs::read_to_string("./store/utc.txt").unwrap_or_default();
-    println!("{:#?}", initial_value);
     let stream = async_stream::stream! {
-        yield Ok(Event::default().data(initial_value));
+        yield Ok(Event::default().data("push-update"));
         while let Ok(msg) = rx.recv().await {
             yield Ok(Event::default().data(msg));
         };
