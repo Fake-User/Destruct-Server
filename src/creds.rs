@@ -7,19 +7,19 @@ use reqwest::Client;
 use std::env;
 
 #[derive(Deserialize, Serialize)]
-pub struct Credentials {
+pub struct Credentials{
     secret_access_key: String,
     access_key_id: String,
     session_token: String
 }
 
 #[derive(Deserialize)]
-struct CloudflareResponse {
+struct CloudflareResponse{
     result: CloudflareResult,
 }
 
 #[derive(Deserialize)]
-struct CloudflareResult {
+struct CloudflareResult{
     #[serde(rename = "secretAccessKey")]
     secret_access_key: String,
     #[serde(rename = "accessKeyId")]
@@ -28,7 +28,7 @@ struct CloudflareResult {
     session_token: String
 }
 
-pub async fn creds() -> Result<Json<Credentials>, StatusCode> {
+pub async fn creds() -> Result<Json<Credentials>, StatusCode>{
     let client = Client::new();
 
     let body = serde_json::json!({
@@ -53,7 +53,7 @@ pub async fn creds() -> Result<Json<Credentials>, StatusCode> {
         .await
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
-    let creds = Credentials {
+    let creds = Credentials{
         secret_access_key: cloudflare_response.result.secret_access_key,
         access_key_id: cloudflare_response.result.access_key_id,
         session_token: cloudflare_response.result.session_token,
