@@ -1,5 +1,5 @@
 mod creds;
-mod utc;
+mod db;
 
 use tower_http::cors::{CorsLayer, Any};
 use tokio::sync::broadcast;
@@ -22,13 +22,9 @@ async fn main(){
     #[cfg(debug_assertions)]
     dotenv().ok();
 
-    let path = std::path::Path::new("./store/utc.txt");
+    let path = std::path::Path::new("./store/db-data.js");
     if !path.exists(){
         match std::fs::create_dir_all("./store"){
-            Ok(_) => println!("{:#?} created successfully", path),
-            Err(_) => println!("error creating {:#?}", path)
-        }
-        match std::fs::File::create(path){
             Ok(_) => println!("{:#?} created successfully", path),
             Err(_) => println!("error creating {:#?}", path)
         }
@@ -43,8 +39,8 @@ async fn main(){
         .allow_origin(Any);
 
     let app = Router::new()
-        .route("/get-utc", get(utc::get_utc))
-        .route("/set-utc", get(utc::set_utc))
+        .route("/get-db", get(db::get_db))
+        .route("/set-db", get(db::set_db))
         .route("/creds", get(creds::creds))
         .with_state(state)
         .layer(cors);

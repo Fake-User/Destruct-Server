@@ -39,11 +39,7 @@ pub async fn creds() -> Result<Json<Credentials>, StatusCode> {
     });
 
     let response = client
-        .post(format!(
-            "https://api.cloudflare.com/client/v4/accounts/{}/r2/temp-access-credentials",
-            env::var("ACCOUNT_ID").unwrap()
-        ))
-
+        .post(format!("https://api.cloudflare.com/client/v4/accounts/{}/r2/temp-access-credentials", env::var("ACCOUNT_ID").unwrap()))
         .header("X-Auth-Email", env::var("X_AUTH_EMAIL").unwrap())
         .header("X-Auth-Key", env::var("X_AUTH_KEY").unwrap())
         .header("Content-Type", "application/json")
