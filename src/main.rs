@@ -57,13 +57,7 @@ async fn main(){
     let cors = CorsLayer::new()
         .allow_methods(Any)
         .allow_headers(Any)
-        .allow_origin([
-            "https://edge.destruct.dev".parse::<HeaderValue>().unwrap(),
-            "https://*.destruct.dev".parse::<HeaderValue>().unwrap(),
-            "http://localhost:31337".parse::<HeaderValue>().unwrap(),
-            "http://localhost:1337".parse::<HeaderValue>().unwrap(),
-            "https://destruct.dev".parse::<HeaderValue>().unwrap(),
-        ]);
+        .allow_origin(Any);
 
     let app = Router::new()
         .route("/get-db", get(db::get_db))
