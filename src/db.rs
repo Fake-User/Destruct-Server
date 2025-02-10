@@ -10,7 +10,12 @@ use crate::AppState;
 
 pub async fn get_db(
     State(state): State<Arc<AppState>>, uri: axum::http::Uri) -> Sse<impl Stream<Item = Result<Event, std::io::Error>> + Send> {
-    let client_utc = uri.query().unwrap_or("").replace("%20", " ").to_string();
+    let client_utc = uri
+        .query()
+        .unwrap_or("")
+        .replace("%20", " ")
+        .replace("%3A", ":")
+        .to_string();
     let rx = state.db_update.subscribe();
     let initial = if client_utc < *state.db_utc.read().unwrap(){Some(Ok(Event::default().data(rx.borrow().clone())))}
     else{None};
