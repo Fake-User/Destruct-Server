@@ -30,7 +30,15 @@ pub async fn get_db(
 
 pub async fn set_db(State(state): State<Arc<AppState>>, headers: HeaderMap, body: String) -> impl IntoResponse{
     if headers.get("authorization").and_then(|h| h.to_str().ok()) != std::env::var("UTC_KEY").ok().as_deref(){return "authorization error".into_response()};
-    let utc = body.clone().split_once('"').unwrap().1.split_once('"').unwrap().0.to_string();
+    let utc = body
+        .clone()
+        .split_once('"')
+        .unwrap()
+        .1
+        .split_once('"')
+        .unwrap()
+        .0
+        .to_string();
     *state.db_utc.write().unwrap() = utc;
     let mut file = std::fs::File::create("store/db-data.js").unwrap();
     file.write_all(body.as_bytes()).unwrap();
