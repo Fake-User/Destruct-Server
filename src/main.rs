@@ -26,8 +26,8 @@ async fn main(){
     let state = Arc::new(AppState{db_update: tx, db_utc: std::sync::RwLock::new("".to_string())});
     let client = Client::new();
 
-    if !std::path::Path::new("store/db-data.js").exists() {
-        std::fs::create_dir_all("store").unwrap();
+    if !std::path::Path::new("/store/db-data.js").exists() {
+        std::fs::create_dir_all("/store").unwrap();
         let response = client
             .get("https://data.destruct.dev/db/db-data.js")
             .send()
@@ -36,10 +36,10 @@ async fn main(){
             .text()
             .await
             .unwrap();
-        std::fs::write("store/db-data.js", &response).unwrap();
+        std::fs::write("/store/db-data.js", &response).unwrap();
     };
 
-    if let Ok(data) = std::fs::read_to_string("store/db-data.js"){
+    if let Ok(data) = std::fs::read_to_string("/store/db-data.js"){
         let utc = data
             .clone()
             .split_once('"')
