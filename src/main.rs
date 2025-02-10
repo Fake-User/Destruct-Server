@@ -2,6 +2,7 @@
 use dotenv::dotenv;
 
 use tower_http::cors::{CorsLayer, Any};
+use axum::http::HeaderValue;
 use tokio::sync::watch;
 use reqwest::Client;
 use std::sync::Arc;
@@ -56,7 +57,12 @@ async fn main(){
     let cors = CorsLayer::new()
         .allow_methods(Any)
         .allow_headers(Any)
-        .allow_origin(Any);
+        .allow_origin([
+            "https://*/destruct.dev".parse::<HeaderValue>().unwrap(),
+            "http://localhost:31337".parse::<HeaderValue>().unwrap(),
+            "http://localhost:1337".parse::<HeaderValue>().unwrap(),
+            "https://destruct.dev".parse::<HeaderValue>().unwrap(),
+        ]);
 
     let app = Router::new()
         .route("/get-db", get(db::get_db))
