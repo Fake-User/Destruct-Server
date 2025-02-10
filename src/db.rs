@@ -45,7 +45,7 @@ pub async fn set_db(State(state): State<Arc<AppState>>, headers: HeaderMap, body
         .0
         .to_string();
     *state.db_utc.write().unwrap() = utc;
-    let mut file = std::fs::File::create("store/db-data.js").unwrap();
+    let mut file = std::fs::File::create("/store/db-data.js").unwrap();
     file.write_all(body.as_bytes()).unwrap();
     let _ = state.db_update.send(body);
     "db updated".into_response()

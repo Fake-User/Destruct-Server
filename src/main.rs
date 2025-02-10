@@ -2,7 +2,6 @@
 use dotenv::dotenv;
 
 use tower_http::cors::{CorsLayer, Any};
-use axum::http::HeaderValue;
 use tokio::sync::watch;
 use reqwest::Client;
 use std::sync::Arc;
